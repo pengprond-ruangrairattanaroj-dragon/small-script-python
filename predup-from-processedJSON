@@ -1,0 +1,166 @@
+path_to_save = "/Users/pengprond.ruangrairattanaroj/Documents/gl_derived_pre_dedup_20230118.csv"
+data_deposit = pd.read_parquet("/Users/pengprond.ruangrairattanaroj/Downloads/-5073580126452100933.parquet")
+data_product = pd.read_csv("/Users/pengprond.ruangrairattanaroj/work/dl-pipeline-finance/app/resources/gl_posting/product.csv", sep=";")
+data_department = pd.read_csv("/Users/pengprond.ruangrairattanaroj/work/dl-pipeline-finance/app/resources/gl_posting/department.csv", sep=";")
+data_affiliate = pd.read_csv("/Users/pengprond.ruangrairattanaroj/work/dl-pipeline-finance/app/resources/gl_posting/affiliate.csv", sep=";")
+
+
+keeper = pd.DataFrame()
+import json
+from os import listdir
+from os.path import isfile, join
+
+json_path = "/Users/pengprond.ruangrairattanaroj/Downloads/json_18jan"
+
+onlyfiles = [f for f in listdir(json_path) if isfile(join(json_path, f))]
+
+
+for i in onlyfiles:
+    if ".json" in i:
+        f = json_path + "/" + i
+        data_q = pd.read_json(f, lines=True)
+
+        data = pd.io.json.json_normalize(data_q["msg_payload"])
+        data = data[data["posting_instruction_batch.client_id"] == "casemgmt"]
+        for index, row in data.iterrows():
+            keeper_template = pd.DataFrame()
+
+            if row["posting_instruction_batch.status"] == "POSTING_INSTRUCTION_BATCH_STATUS_ACCEPTED":
+                keeper_template["id"] = [row["posting_instruction_batch.id"]]
+                keeper_template["client_id"] = [row["posting_instruction_batch.client_id"]]
+                keeper_template["client_batch_id"] = [row["posting_instruction_batch.client_batch_id"]]
+                keeper_template["value_timestamp"] = [row["posting_instruction_batch.value_timestamp"]]
+                keeper_template["insertion_timestamp"] = [row["posting_instruction_batch.insertion_timestamp"]]
+                keeper_template["status"] = [row["posting_instruction_batch.status"]]
+                keeper_template["inst_id"] = [row["posting_instruction_batch.posting_instructions"][0]["id"]]
+                keeper_template["client_transaction_id"] = [row["posting_instruction_batch.posting_instructions"][0]["client_transaction_id"]]
+                if "description" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["inst_dtl_desc"] = [row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["description"]]
+                else:
+                    keeper_template["inst_dtl_desc"] = [""]
+
+                if "outbound_authorisation" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["outbound_authorisation"] is not None:
+                    keeper_template["inst_type"] = ["outbound_authorisation"]
+                elif "inbound_authorisation" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["inbound_authorisation"] is not None:
+                    keeper_template["inst_type"] = ["inbound_authorisation"]
+                elif "authorisation_adjustment" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["authorisation_adjustment"] is not None:
+                    keeper_template["inst_type"] = ["authorisation_adjustment"]
+                elif "settlement" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["settlement"] is not None:
+                    keeper_template["inst_type"] = ["settlement"]
+                elif "release" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["release"] is not None:
+                    keeper_template["inst_type"] = ["release"]
+                elif "inbound_hard_settlement" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["inbound_hard_settlement"] is not None:
+                    keeper_template["inst_type"] = ["inbound_hard_settlement"]
+                elif "outbound_hard_settlement" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["outbound_hard_settlement"] is not None:
+                    keeper_template["inst_type"] = ["outbound_hard_settlement"]
+                elif "custom_instruction" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["custom_instruction"] is not None:
+                    keeper_template["inst_type"] = ["custom_instruction"]
+                elif "transfer" in row["posting_instruction_batch.posting_instructions"][0] and row["posting_instruction_batch.posting_instructions"][0]["transfer"] is not None:
+                    keeper_template["inst_type"] = ["transfer"]
+                else:
+                    keeper_template["inst_type"] = ["NOT_EXISTED"]
+
+
+                keeper_template["credit"] = [None]
+                keeper_template["denomination"] = [None]
+                #only working for HKD :DDDDDDD
+                keeper_template["exchange_rate"] = [1]
+
+                if "event" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["inst_dtl_event"] = [row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["event"]]
+                else:
+                    keeper_template["inst_dtl_event"] = ""
+
+                if "originating_account_id" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["inst_dtl_origin_account_id"] = [row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["originating_account_id"]]
+                else:
+                    keeper_template["inst_dtl_origin_account_id"] = ""
+
+                keeper_template["tm_account_id"] = [None]
+                keeper_template["account_address"] = [None]
+                keeper_template["asset"] = [None]
+                keeper_template["phase"] = [None]
+                keeper_template["amount"] = [0.00]
+                keeper_template["ns_account_ref"] = [None]
+                keeper_template["department_ref"] = [None]
+                keeper_template["product_ref"] = [None]
+                keeper_template["operating_unit_ref"] = ["104"]
+                keeper_template["affiliate_ref"] = ""
+                keeper_template["debit_amount"] = [0.00]
+                keeper_template["credit_amount"] = [0.00]
+                keeper_template["product_ref"] = [None]
+                
+                if "transfer_msg" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["memo"] = [row["posting_instruction_batch.client_id"]+"::"+row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["transfer_msg"]]
+                elif "transfer_reason" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["memo"] = [row["posting_instruction_batch.client_id"]+"::"+row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["transfer_reason"]]
+                else:
+                    keeper_template["memo"] = [""]
+
+
+                keeper_template["tran_id"] = ["casemgmt:20230117:20230117-HKD-1"]
+                keeper_template["ns_tran_date"] = ["18/1/2023"]
+                keeper_template["year"] = ["2023"]
+                keeper_template["month"] = ["1"]
+                keeper_template["day"] = ["18"]
+
+                keeper_template["are_business_unit"] = ["460"]
+
+                if "inst_type" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["trans_type"] = [row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["inst_type"]]
+                else:
+                    keeper_template["trans_type"] = [""]
+
+                if "product_group" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["trans_type"] = [row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["product_group"]]
+                else:
+                    keeper_template["trans_type"] = [""]
+    
+                keeper_template["account_type"] = [""]
+                if "loc_type" in row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]:
+                    keeper_template["trans_type"] = [row["posting_instruction_batch.posting_instructions"][0]["instruction_details"]["loc_type"]]
+                else:
+                    keeper_template["trans_type"] = [""]
+                
+
+                temp_loop = row["posting_instruction_batch.posting_instructions"][0]["committed_postings"]
+                for i in temp_loop:
+                    keeper_temp = keeper_template.copy()
+                    keeper_temp["credit"] = i["credit"]
+                    keeper_temp["denomination"] = i["denomination"]
+                    keeper_temp["tm_account_id"] = i["account_id"]
+                    keeper_temp["account_address"] = i["account_address"]
+                    keeper_temp["asset"] = i["asset"]
+                    keeper_temp["phase"] = i["phase"]
+                    keeper_temp["amount"] = round(float(i["amount"]), 8)
+
+                    if len(keeper_temp["tm_account_id"][0]) > 7 and data_deposit["accountId"].str.contains(keeper_temp["tm_account_id"][0]).any():
+                        keeper_temp["ns_account_ref"] = "2020120"
+                    elif len(keeper_temp["tm_account_id"][0]) > 7:
+                        keeper_temp["ns_account_ref"] = "2060246"
+                    else:
+                        keeper_temp["ns_account_ref"] = keeper_temp["tm_account_id"]
+
+                    if data_department["tm_account_id"].astype(str).str.contains(keeper_temp["ns_account_ref"][0]).any() :
+                        keeper_temp["department_ref"] = data_department.loc[data_department["tm_account_id"] == int(keeper_temp["ns_account_ref"][0]),"department_id"].iloc[0]
+                    else:
+                        keeper_temp["department_ref"] = "1392"
+
+
+                    if data_product["account_id"].astype(str).str.contains(keeper_temp["ns_account_ref"][0]).any() :
+                        keeper_temp["product_ref"] = data_product.loc[data_product["account_id"] == int(keeper_temp["ns_account_ref"][0]),"product_code"].iloc[0]
+                    else:
+                        keeper_temp["product_ref"] = ""
+
+                    if data_affiliate["tm_account_id"].astype(str).str.contains(keeper_temp["ns_account_ref"][0]).any():
+                        keeper_temp["affiliate_ref"] = data_affiliate.loc[data_affiliate["tm_account_id"] == int(keeper_temp["ns_account_ref"][0]), "affiliate_code"].iloc[0]
+                    else:
+                        keeper_temp["affiliate_ref"] = ""
+
+                    if keeper_temp["credit"][0]:
+                        keeper_temp["credit_amount"] = keeper_temp["amount"][0]
+                    else:
+                        keeper_temp["debit_amount"] = keeper_temp["amount"][0]
+
+
+                    keeper = pd.concat([keeper, keeper_temp])

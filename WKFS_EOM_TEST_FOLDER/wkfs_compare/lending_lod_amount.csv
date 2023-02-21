@@ -1,0 +1,17 @@
+TYP_AMOUNT;OCA_AMOUNT;CCY_ISO_CURRENCY;IDE_POSITION_REF;STATUS;LOT_TYPE_FK;VALID_ON;DTE_VALUE;RCA_AMOUNT;IDE_GL_REF;IDE_SCENARIO_FK;TYP_DC_INDICATOR;IDE_GL_DETAIL_REF;IDE_GL_ENTITY_REF
+1;0.0;HKD;9022122137319766743HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;0.0;HKD;6674620784494423703HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;0.0;HKD;3360919386194837480HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;0.0;HKD;7783920359104340282HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;0.0;HKD;5228290615856727416HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;0.0;HKD;5239493837860035365HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;0.0;HKD;1756532506077298718HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;0.0;HKD;4329970629221313797HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;13490903.73;HKD;9022122137319766743HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;2905.46;HKD;6674620784494423703HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;214.0;HKD;3360919386194837480HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;53336.25;HKD;7783920359104340282HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;3590.59;HKD;5228290615856727416HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;172954.0;HKD;5239493837860035365HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;4097146.88;HKD;1756532506077298718HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0
+1;14153.92;HKD;4329970629221313797HKD_C;1;1;20230131;;;1050220HKD;0;2;1050220 Loans and advances to customers : Gross loans and advances to customers : CARDHOLDER BAL-P;0

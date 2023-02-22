@@ -1,0 +1,13 @@
+1. Profit&Loss and GL : expected to be different
+2. lending_lod_amount 
+    - OCA_AMOUNT for some records are 0. Information derived from charged_columns_non_loc or charged_columns_loc depending on OUTSTANDING_BALANCE
+3. loc_loan_dep
+    - New loc record from SFT-1808
+4. non_tm_cua_amount
+    - From different trial balance
+5. provision and provision_hk
+    - Data from (3.) loc_loan_dep
+6. repo_hk
+    - Due to SFT-1837
+7. repo
+    - Due to SFT-1811

@@ -2,11 +2,15 @@
 2. lending_lod_amount 
     - Due to SFT-1835
 3. loc_loan_dep
-    - New loc record from SFT-1808
+    - Due to decimal places in original EOM, need to be align with EoD -> will be fixed in the new EOM
 4. non_tm_cua_amount
     - From different trial balance
+    - Due to wkfs eom MT950 data https://s3.console.aws.amazon.com/s3/buckets/prod-finance-datalake-217989381691-ap-east-1/object/select?region=ap-east-1&prefix=reports/wkfs/sources/swift/mt950/year%3D2023/month%3D1/day%3D31/MT950_parsed.csv
 5. provision and provision_hk
     - Data from (3.) loc_loan_dep
+    - ECL status has been changed
+        EOD at 31/01/2023 will use CreditCardEclSnapshot at 31/12/2022
+        EOM at 31/01/2023 (run at 06/02/2023) will use CreditCardEclSnapshot at 31/01/2023
 6. repo_hk
     - Due to SFT-1837
 7. repo

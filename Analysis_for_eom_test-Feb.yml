@@ -1,0 +1,25 @@
+1. lending_loan_dep, loc_loan_dep
+    - currentdpd was changed for credit_account_dpd
+    - sql for ref : SELECT * FROM "datalake_creditrisk"."credit_account_dpd_eod_snapshot" WHERE customerid = '3196203625654346523' AND year=2023 AND ((month =2 AND day =28) OR (month =3 AND day =6))
+
+2.non_tm_cust_acc_hk, non_tm_cust_acc
+    - MT950 doesn't exist in PROD ref: https://s3.console.aws.amazon.com/s3/buckets/prod-finance-datalake-217989381691-ap-east-1?prefix=reports/wkfs/sources/swift/mt950/&region=ap-east-1
+    - Amount df in trial balance is different
+
+3. provision and provision_hk
+    - Data from (1) loc_loan_dep
+    - ECL status has been changed
+        EOD at 28/02/2023 will use CreditCardEclSnapshot at 31/01/2023 
+        EOM at 28/02/2023 (run at 06/03/2023) will use CreditCardEclSnapshot at 28/03/2023
+    - sql for ref : SELECT * FROM "datalake_creditrisk"."ecl_credit_card" WHERE year=2023 AND ((month =2 AND day =28) OR (month =1 AND day =31)) AND customerid = '8080528247945673340'
+
+4. repo_hk, repo
+    - Treasury snapshot for repo have 2 versions
+    - ref : https://s3.console.aws.amazon.com/s3/object/prod-finance-datalake-217989381691-ap-east-1?region=ap-east-1&prefix=snapshots/treasury/repos/year%3D2023/month%3D2/day%3D28/repos.parquet&versionId=KDY.iL9CiiZFfcfz3gaHR_hFK7Yj1Ju6
+
+5. sec_amount
+    - decimal point from 9 places (EOD) to 10 places (EOM) EG. 7971494.703460828 to 7971494.7034608275
+    - Repo source from (4)
+
+6. securities_hk , securities
+    - Repo source from (4)

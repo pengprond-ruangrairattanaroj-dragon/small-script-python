@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-path1 = os.getcwd()+"/WKFS_EOM_TEST_FOLDER/wkfs"
+path1 = os.getcwd()+"/WKFS_EOM_TEST_FOLDER/wkfs_eom"
 path2 = os.getcwd()+"/WKFS_EOM_TEST_FOLDER/wkfs_eom_test"
 path3 = os.getcwd()+"/WKFS_EOM_TEST_FOLDER/wkfs_compare"
 files1 = [os.path.join(path1, x) for x in os.listdir(path1) if '.csv' in str(x)]
